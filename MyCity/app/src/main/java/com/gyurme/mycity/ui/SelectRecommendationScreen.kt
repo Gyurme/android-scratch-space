@@ -25,18 +25,18 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.gyurme.mycity.MyCityUiState
 import com.gyurme.mycity.R
 import com.gyurme.mycity.data.Recommendation
 import com.gyurme.mycity.data.local.LocalRecommendationDataProvider
 import com.gyurme.mycity.ui.theme.MyCityTheme
 
 @Composable
-fun SelectRecommendationScreen(
+fun SelectRecommendationListOnlyScreen(
     recommendations: List<Recommendation>,
     onRecommendationClicked: (Recommendation) -> Unit,
     modifier: Modifier
 ) {
-
     LazyColumn(
         modifier = modifier,
         contentPadding = WindowInsets.safeDrawing.asPaddingValues(),
@@ -55,6 +55,39 @@ fun SelectRecommendationScreen(
                 }
             )
         }
+    }
+}
+
+@Composable
+fun SelectRecommendationListDetailScreen(
+    uiState: MyCityUiState,
+    onRecommendationClicked: (Recommendation) -> Unit,
+    modifier: Modifier
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        LazyColumn(
+            modifier = modifier.weight(1f),
+            contentPadding = WindowInsets.safeDrawing.asPaddingValues(),
+            verticalArrangement = Arrangement.spacedBy(
+                dimensionResource(R.dimen.category_list_item_vertical_spacing)
+            )
+        )
+        {
+            items(uiState.currentRecommendations, key = { recommendation -> recommendation.id })
+            { recommendation ->
+                RecommendationListItem(
+                    recommendation = recommendation,
+                    selected = false,
+                    onCardClick = {
+                        onRecommendationClicked(recommendation)
+                    }
+                )
+            }
+        }
+        RecommendationDetailScreen(uiState = uiState, modifier = modifier.weight(2f))
     }
 }
 
@@ -106,12 +139,27 @@ fun RecommendationListItem(
     }
 }
 
+/*
 @Preview
 @Composable
 fun RecommendationScreenPreview() {
     MyCityTheme {
-        SelectRecommendationScreen(
+        SelectRecommendationListOnlyScreen(
             recommendations = LocalRecommendationDataProvider.allRecommendations,
+            onRecommendationClicked = { },
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(dimensionResource(R.dimen.padding_medium))
+        )
+    }
+}*/
+
+@Preview
+@Composable
+fun RecommendationListDetailScreenPreview() {
+    MyCityTheme {
+        SelectRecommendationListDetailScreen(
+            uiState = MyCityUiState(allRecommendations = LocalRecommendationDataProvider.groupedRecommendations()),
             onRecommendationClicked = { },
             modifier = Modifier
                 .fillMaxSize()

@@ -17,15 +17,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.gyurme.mycity.MyCityUiState
 import com.gyurme.mycity.R
-import com.gyurme.mycity.data.RecommendationDetail
-import com.gyurme.mycity.data.local.LocalRecommendationDataProvider
-import com.gyurme.mycity.data.local.LocalRecommendationDetailProvider
 import com.gyurme.mycity.ui.theme.MyCityTheme
 
 @Composable
 fun RecommendationDetailScreen(
-    recommendationDetail: RecommendationDetail,
+    uiState: MyCityUiState,
     modifier: Modifier
 ) {
     Column(
@@ -40,14 +38,14 @@ fun RecommendationDetailScreen(
             )
         ) {
             Image(
-                painter = painterResource(recommendationDetail.recommendation.image),
+                painter = painterResource(uiState.currentRecommendationDetail.recommendation.image),
                 contentScale = ContentScale.Crop,
                 contentDescription = null,
-                modifier = Modifier.fillMaxWidth().height(500.dp)
+                modifier = Modifier.fillMaxWidth().height(300.dp)
             )
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_medium)))
             Text(
-                text = stringResource(recommendationDetail.description),
+                text = stringResource(uiState.currentRecommendationDetail.description),
                 style = MaterialTheme.typography.headlineSmall
             )
         }
@@ -59,9 +57,7 @@ fun RecommendationDetailScreen(
 fun RecommendationDetailPreview() {
     MyCityTheme {
         RecommendationDetailScreen(
-            LocalRecommendationDetailProvider.getDetailForRecommendation(
-                LocalRecommendationDataProvider.getRecommendationById(3L)
-            ),
+            uiState = MyCityUiState(),
             modifier = Modifier
         )
     }

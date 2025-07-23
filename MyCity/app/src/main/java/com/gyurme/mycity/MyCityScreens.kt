@@ -12,6 +12,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
@@ -24,12 +25,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.gyurme.mycity.data.Category
-import com.gyurme.mycity.data.Recommendation
-import com.gyurme.mycity.data.RecommendationDetail
-import com.gyurme.mycity.data.local.LocalRecommendationDetailProvider.getDetailForRecommendation
 import com.gyurme.mycity.ui.CategoryScreen
 import com.gyurme.mycity.ui.RecommendationDetailScreen
-import com.gyurme.mycity.ui.SelectRecommendationScreen
+import com.gyurme.mycity.ui.SelectRecommendationListOnlyScreen
+import com.gyurme.mycity.ui.utils.RecommendationContentType
+import androidx.compose.runtime.getValue
+import com.gyurme.mycity.ui.SelectRecommendationListDetailScreen
 
 enum class MyCityScreen {
     Start,
@@ -38,8 +39,8 @@ enum class MyCityScreen {
 }
 
 /**
-* Composable that displays the topBar and displays back button if back navigation is possible.
-*/
+ * Composable that displays the topBar and displays back button if back navigation is possible.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyCityAppBar(
@@ -49,16 +50,16 @@ fun MyCityAppBar(
     modifier: Modifier = Modifier
 ) {
     val topBarTitle =
-    if (title.isEmpty()) {
-        stringResource(R.string.app_name)
-    } else {
-        title
-    }
+        if (title.isEmpty()) {
+            stringResource(R.string.app_name)
+        } else {
+            title
+        }
     TopAppBar(
         title = { Text(topBarTitle) },
-         colors = TopAppBarDefaults.mediumTopAppBarColors(
-             containerColor = MaterialTheme.colorScheme.primaryContainer
-         ),
+        colors = TopAppBarDefaults.mediumTopAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        ),
         modifier = modifier,
         navigationIcon = {
             if (canNavigateBack) {
@@ -74,11 +75,19 @@ fun MyCityAppBar(
 }
 
 @Composable
-fun MyCityApp(modifier: Modifier = Modifier) {
+fun MyCityApp(windowSize: WindowWidthSizeClass, modifier: Modifier = Modifier) {
 
     val viewModel: MyCityViewModel = viewModel()
-    val myCityUiState = viewModel.uiState.collectAsState().value
+    val myCityUiState by viewModel.uiState.collectAsState()
     val navController: NavHostController = rememberNavController()
+
+    val contentType: RecommendationContentType = when (windowSize) {
+        WindowWidthSizeClass.Expanded -> {
+            RecommendationContentType.LIST_AND_DETAIL
+        } else -> {
+            RecommendationContentType.LIST_ONLY
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -108,22 +117,33 @@ fun MyCityApp(modifier: Modifier = Modifier) {
             }
 
             composable(route = MyCityScreen.Recommendations.name) {
-                SelectRecommendationScreen(
-                    recommendations = myCityUiState.currentRecommendations,
-                    onRecommendationClicked = { recommendation ->
-                        viewModel.setCurrentRecommendationDetail(recommendation)
-                        navController.navigate(MyCityScreen.RecommendationDetail.name)
-                    },
-                    modifier = modifier
-                )
+                if (contentType == RecommendationContentType.LIST_ONLY) {
+                    SelectRecommendationListOnlyScreen(
+                        recommendations = myCityUiState.currentRecommendations,
+                        onRecommendationClicked = { recommendation ->
+                            viewModel.setCurrentRecommendationDetail(recommendation)
+                            navController.navigate(MyCityScreen.RecommendationDetail.name)
+                        },
+                        modifier = modifier
+                    )
+                } else {
+                    SelectRecommendationListDetailScreen(
+                        uiState = myCityUiState,
+                        onRecommendationClicked = { recommendation ->
+                            viewModel.setCurrentRecommendationDetail(recommendation)
+                        },
+                        modifier = modifier
+                    )
+                }
             }
 
             composable(route = MyCityScreen.RecommendationDetail.name) {
-               RecommendationDetailScreen(
-                    recommendationDetail = myCityUiState.currentRecommendationDetail,
+                RecommendationDetailScreen(
+                    uiState = myCityUiState,
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(dimensionResource(R.dimen.padding_medium)))
+                        .padding(dimensionResource(R.dimen.padding_medium))
+                )
             }
         }
     }

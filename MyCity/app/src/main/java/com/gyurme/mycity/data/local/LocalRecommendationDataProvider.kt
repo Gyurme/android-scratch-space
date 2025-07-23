@@ -5,7 +5,7 @@ import com.gyurme.mycity.data.Category
 import com.gyurme.mycity.data.Recommendation
 
 object LocalRecommendationDataProvider {
-     val allRecommendations = listOf(
+    val allRecommendations = listOf(
         Recommendation(
             id = 1L,
             Category.Cafe,
@@ -26,7 +26,12 @@ object LocalRecommendationDataProvider {
         ),
     )
 
-    fun getRecommendationById(id: Long) : Recommendation {
+    fun getRecommendationById(id: Long): Recommendation {
         return allRecommendations.firstOrNull { it.id == id } ?: allRecommendations.first()
+    }
+
+    fun groupedRecommendations(): Map<Category, List<Recommendation>> {
+        return LocalRecommendationDataProvider.allRecommendations.groupBy { it.category }
+
     }
 }
