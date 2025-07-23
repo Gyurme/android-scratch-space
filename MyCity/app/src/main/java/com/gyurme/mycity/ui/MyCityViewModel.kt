@@ -8,12 +8,13 @@ import com.gyurme.mycity.data.local.LocalRecommendationDataProvider
 import com.gyurme.mycity.data.local.LocalRecommendationDetailProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 class MyCityViewModel : ViewModel() {
 
     private val _uiState = MutableStateFlow(MyCityUiState())
-    val uiState : StateFlow<MyCityUiState> = _uiState
+    val uiState : StateFlow<MyCityUiState> = _uiState.asStateFlow()
 
     init {
         initializeUIState()
