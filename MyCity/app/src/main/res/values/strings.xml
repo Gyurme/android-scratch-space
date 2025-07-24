@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">My City</string>
+    <string name="recommendation_cafe_1">
+        Espresso Workshop
+    </string>
+    <string name="recommendation_restaurant_1">
+        Mexico
+    </string>
+    <string name="recommendation_attraction_1">
+        Sky Tower
+    </string>
+    <string name="recommendation_detail_cafe_espresso_workshop">
+        Specialty coffee roastery in Auckland New Zealand offering high quality single origin
+        and blended coffee beans as well as coffee equipment from filter
+    </string>
+    <string name="recommendation_detail_restaurant_mexico">
+        Mexico Food and Liquor - Celebrating the vibrant, fresh and lighter side of Mexican cuisine.
+        Gluten-free, vegan options available. Open 7 days, midday - late.
+    </string>
+    <string name="recommendation_detail_attraction_sky_tower">
+       Standing 328 meters tall, the Sky Tower has dominated the Auckland skyline for over 27 years,
+        offering stunning 360° views across Tāmaki Makaurau.
+    </string>
+    <string name="back_button">Back</string>
 </resources>
