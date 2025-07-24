@@ -29,23 +29,18 @@ class MyCityViewModel : ViewModel() {
     }
 
     fun setCategory(category: Category) {
-        val defaultRecommendation = _uiState.value.allRecommendations[category]?.first()
-        val defaultRecommendationDetail = defaultRecommendation?.let { LocalRecommendationDetailProvider.getDetailForRecommendation(it) } ?: LocalRecommendationDetailProvider.defaultRecommendationDetail
-        _uiState.update {
+       _uiState.update {
             currentState ->
             currentState.copy(
                 currentTitle = category.name,
                 currentCategory = category,
-                currentRecommendations = LocalRecommendationDataProvider.groupedRecommendations()[category] ?: emptyList(),
-                currentRecommendationDetail = defaultRecommendationDetail
-            )
+                selectedRecommendationId = null)
         }
     }
 
     fun setCurrentRecommendationDetail(recommendation: Recommendation) {
-        val recommendationDetail =LocalRecommendationDetailProvider.getDetailForRecommendation(recommendation)
         _uiState.update {
-            it.copy(currentRecommendationDetail = recommendationDetail)
+            it.copy(selectedRecommendationId = recommendation.id)
         }
     }
 }

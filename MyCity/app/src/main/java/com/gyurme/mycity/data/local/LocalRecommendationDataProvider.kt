@@ -24,6 +24,12 @@ object LocalRecommendationDataProvider {
             R.string.recommendation_attraction_1,
             image = R.drawable.detail_attraction_sky
         ),
+        Recommendation(
+            id = 4L,
+            Category.Attraction,
+            R.string.recommendation_cafe_1,
+            image = R.drawable.detail_cafe_espresso
+        )
     )
 
     fun getRecommendationById(id: Long): Recommendation {
