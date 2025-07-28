@@ -84,7 +84,9 @@ fun MyCityApp(windowSize: WindowWidthSizeClass, modifier: Modifier = Modifier) {
     val contentType: RecommendationContentType = when (windowSize) {
         WindowWidthSizeClass.Expanded -> {
             RecommendationContentType.LIST_AND_DETAIL
-        } else -> {
+        }
+
+        else -> {
             RecommendationContentType.LIST_ONLY
         }
     }
