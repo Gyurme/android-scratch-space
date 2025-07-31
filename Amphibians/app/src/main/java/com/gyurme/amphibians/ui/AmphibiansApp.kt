@@ -31,7 +31,10 @@ fun AmphibiansApp() {
             modifier = Modifier.fillMaxSize()
         ) {
             val amphibiansViewModel: AmphibiansViewModel = viewModel(factory = AmphibiansViewModel.Factory)
-            HomeScreen(amphibiansViewModel.amphibiansUiState,contentPadding = it)
+            HomeScreen(
+                amphibiansUiState = amphibiansViewModel.amphibiansUiState,
+                retryAction = amphibiansViewModel::getAmphibians ,
+                contentPadding = it)
         }
     }
 }
