@@ -1,6 +1,6 @@
 package com.gyurme.amphibians.network
 
-import kotlinx.serialization.SerialName
+import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -8,6 +8,6 @@ data class Amphibian(
     val name: String,
     val type: String,
     val description: String,
-    @SerialName(value = "img_src")
-    val img_src: String
+    @SerializedName(value = "img_src")
+    val imgSrc: String
 )
