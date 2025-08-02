@@ -20,12 +20,11 @@ class AppModule {
     }
 
     @Provides
-    fun provideRetrofit(baseUrl: String) {
+    fun provideRetrofit(baseUrl: String) =
         Retrofit.Builder()
             .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
             .baseUrl(baseUrl)
             .build()
-    }
 
     @Provides
     fun provideBookShelfApiService(retrofit: Retrofit): BookShelfApiService =
