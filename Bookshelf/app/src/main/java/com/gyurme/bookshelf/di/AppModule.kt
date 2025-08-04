@@ -1,6 +1,6 @@
 package com.gyurme.bookshelf.di
 
-import com.gyurme.bookshelf.network.BookShelfApiService
+import com.gyurme.bookshelf.network.BookshelfApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,6 +27,6 @@ class AppModule {
             .build()
 
     @Provides
-    fun provideBookShelfApiService(retrofit: Retrofit): BookShelfApiService =
-        retrofit.create(BookShelfApiService::class.java)
+    fun provideBookshelfApiService(retrofit: Retrofit): BookshelfApiService =
+        retrofit.create(BookshelfApiService::class.java)
 }
