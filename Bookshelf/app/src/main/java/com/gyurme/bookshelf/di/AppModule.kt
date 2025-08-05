@@ -1,5 +1,7 @@
 package com.gyurme.bookshelf.di
 
+import com.gyurme.bookshelf.data.BookShelfRepository
+import com.gyurme.bookshelf.data.NetworkBookShelfRepository
 import com.gyurme.bookshelf.network.BookshelfApiService
 import dagger.Module
 import dagger.Provides
@@ -20,13 +22,20 @@ class AppModule {
     }
 
     @Provides
-    fun provideRetrofit(baseUrl: String) =
-        Retrofit.Builder()
-            .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
+    fun provideRetrofit(baseUrl: String) : Retrofit {
+        val networkJson = Json { ignoreUnknownKeys = true }
+
+        return Retrofit.Builder()
             .baseUrl(baseUrl)
+            .addConverterFactory(networkJson.asConverterFactory("application/json".toMediaType()))
             .build()
+    }
 
     @Provides
     fun provideBookshelfApiService(retrofit: Retrofit): BookshelfApiService =
         retrofit.create(BookshelfApiService::class.java)
+
+    @Provides
+    fun provideBookshelfRepository(bookshelfApiService: BookshelfApiService): BookShelfRepository =
+        NetworkBookShelfRepository(bookshelfApiService)
 }
