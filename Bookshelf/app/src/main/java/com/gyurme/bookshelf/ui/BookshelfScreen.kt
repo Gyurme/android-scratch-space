@@ -24,11 +24,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Devices.PHONE
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.gyurme.bookshelf.R
 import com.gyurme.bookshelf.data.Book
+import com.gyurme.bookshelf.ui.theme.BookshelfTheme
 
 @Composable
 fun BookshelfScreen(
@@ -121,5 +125,21 @@ fun ErrorScreen(retryAction: () -> Unit, modifier: Modifier = Modifier) {
         Button(onClick = retryAction) {
             Text(stringResource(R.string.retry))
         }
+    }
+}
+@Preview(showBackground = true)
+@Composable
+fun ResultScreenPreview() {
+    BookshelfTheme {
+        val mockData = BookshelfUiState.Success(List(4) { Book(id = "$it", imgSrc = "http://www.google.com")})
+        BookshelfScreen(mockData)
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ErrorScreenPreview() {
+    BookshelfTheme {
+        ErrorScreen({})
     }
 }

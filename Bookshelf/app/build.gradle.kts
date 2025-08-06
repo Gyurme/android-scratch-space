@@ -65,6 +65,8 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.okhttp)
     implementation(libs.coil.compose)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
     ksp(libs.hilt.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
