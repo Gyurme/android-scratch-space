@@ -4,8 +4,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.gyurme.bookshelf.data.Book
 import com.gyurme.bookshelf.data.BookShelfRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -22,15 +22,20 @@ class BookshelfViewModel @Inject constructor(
         private set
 
     init {
-        getVolumes()
+        getBooks()
     }
 
-    fun getVolumes() {
+    fun getBooks() {
         viewModelScope.launch {
             bookshelfUiState = BookshelfUiState.Loading
             bookshelfUiState = try {
                 val result = bookShelfRepository.getBooksForCategory("jazz")
-                BookshelfUiState.Success(result)
+                val books =
+                    result.map { book ->
+                        val details = bookShelfRepository.getBookDetails(book.id)
+                        Book(id = book.id, imgSrc = details.imageLinks.smallThumbnail)
+                    }
+                BookshelfUiState.Success(books)
             } catch (e: IOException) {
                 BookshelfUiState.Error
             } catch (e: HttpException) {

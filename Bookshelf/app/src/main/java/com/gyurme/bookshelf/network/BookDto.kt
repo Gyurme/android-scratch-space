@@ -3,13 +3,13 @@ package com.gyurme.bookshelf.network
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Book(
+data class BookDto(
     val id: String,
-    val volumeInfo: BookInfo
+    val volumeInfo: BookDetails
 )
 
 @Serializable
-data class BookInfo(
+data class BookDetails(
     val imageLinks: ImageInfo
 )
 
@@ -21,5 +21,5 @@ data class ImageInfo(
 
 @Serializable
 data class BookResults(
-    val items: List<Book>
+    val items: List<BookDto>
 )

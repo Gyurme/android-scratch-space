@@ -23,7 +23,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.gyurme.bookshelf.R
-import com.gyurme.bookshelf.network.Book
+import com.gyurme.bookshelf.data.Book
+import com.gyurme.bookshelf.network.BookDto
 
 @Composable
 fun BookshelfScreen(
@@ -74,7 +75,7 @@ fun BookPhotoCard(book: Book, modifier: Modifier = Modifier) {
         modifier = modifier,
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
-            Text(book.volumeInfo.imageLinks.thumbnail)
+            Text(book.imgSrc)
     }
 }
 
