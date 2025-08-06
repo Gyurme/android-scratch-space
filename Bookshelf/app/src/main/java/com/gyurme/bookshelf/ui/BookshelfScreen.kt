@@ -19,19 +19,23 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.gyurme.bookshelf.R
 import com.gyurme.bookshelf.data.Book
-import com.gyurme.bookshelf.network.BookDto
 
 @Composable
 fun BookshelfScreen(
     bookshelfUiState: BookshelfUiState,
+    retryAction: () -> Unit = {},
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
-    retryAction: () -> Unit = {}
 ) {
 
     when (bookshelfUiState) {
@@ -39,7 +43,12 @@ fun BookshelfScreen(
             LoadingScreen(modifier = modifier.fillMaxSize())
 
         is BookshelfUiState.Success ->
-            BookshelfGridScreen(bookshelfUiState.books)
+            BookshelfGridScreen(bookshelfUiState.books,
+                modifier = modifier.padding(
+                    start = dimensionResource(R.dimen.padding_medium),
+                    top = dimensionResource(R.dimen.padding_medium),
+                    end = dimensionResource(R.dimen.padding_medium)
+                ), contentPadding = contentPadding)
 
         is BookshelfUiState.Error ->
             ErrorScreen(retryAction, modifier = modifier.fillMaxSize())
@@ -61,9 +70,7 @@ fun BookshelfGridScreen(
             BookPhotoCard(
                 book,
                 modifier = modifier
-                    .padding(4.dp)
                     .fillMaxWidth()
-                    .aspectRatio(1.5f)
             )
         }
     }
@@ -75,7 +82,17 @@ fun BookPhotoCard(book: Book, modifier: Modifier = Modifier) {
         modifier = modifier,
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
-            Text(book.imgSrc)
+        AsyncImage(
+            model = ImageRequest.Builder(context = LocalContext.current)
+                .data(book.imgSrc)
+                .crossfade(true)
+                .build(),
+            error = painterResource(R.drawable.ic_broken_image),
+            placeholder = painterResource(R.drawable.loading_img),
+            contentDescription = stringResource(R.string.bookShelf),
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }
 

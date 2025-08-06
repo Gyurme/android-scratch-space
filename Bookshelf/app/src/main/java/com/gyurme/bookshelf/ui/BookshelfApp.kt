@@ -30,6 +30,7 @@ fun BookshelfApp() {
             val bookshelfViewModel : BookshelfViewModel = hiltViewModel()
             BookshelfScreen(
                 bookshelfViewModel.bookshelfUiState,
+                retryAction = bookshelfViewModel::getBooks,
                 contentPadding = it
             )
         }
