@@ -23,7 +23,7 @@ plugins {
 
 android {
     namespace 'com.example.sqldemo'
-    compileSdk 35
+    compileSdk 36
 
     defaultConfig {
         applicationId "com.example.sqldemo"
