@@ -36,6 +36,7 @@ object AppViewModelProvider {
         // Initializer for ItemEditViewModel
         initializer {
             ItemEditViewModel(
+                itemsRepository = inventoryApplication().container.itemsRepository,
                 this.createSavedStateHandle()
             )
         }
