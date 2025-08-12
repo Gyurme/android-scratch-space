@@ -1,4 +1,4 @@
-package com.example.dessertrelease.data.local
+package com.example.dessertrelease.data
 
 import android.util.Log
 import androidx.datastore.core.DataStore
