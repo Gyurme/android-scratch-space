@@ -6,8 +6,6 @@ import kotlinx.coroutines.delay
 class LocalTransactionRepository : TransactionRepository {
     override suspend fun getTransactions(): Result<List<Transaction>> {
         return try {
-            // In real app: val response = apiService.getTransactions()
-            // For practice: return mock data with delay
             delay(1000) // Simulate network
             Result.success(MockTransactionData.sampleTransactions)
         } catch (e: Exception) {
@@ -21,20 +19,6 @@ class LocalTransactionRepository : TransactionRepository {
             val updated = MockTransactionData.sampleTransactions
                 .find { it.id == id }
                 ?.copy(status = TransactionStatus.APPROVED)
-
-            updated?.let { Result.success(it) }
-                ?: Result.failure(Exception("Transaction not found"))
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-
-    override suspend fun declineTransaction(id: Long): Result<Transaction> {
-        return try {
-            delay(500) // Simulate network
-            val updated = MockTransactionData.sampleTransactions
-                .find { it.id == id }
-                ?.copy(status = TransactionStatus.DECLINED)
 
             updated?.let { Result.success(it) }
                 ?: Result.failure(Exception("Transaction not found"))
