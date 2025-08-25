@@ -9,7 +9,7 @@ class NetworkTransactionRepository @Inject constructor(private val transactionAp
     TransactionRepository {
     override suspend fun getTransactions(): Result<List<Transaction>> {
         return try {
-            Result.success(transactionApiService.getTransactions().transactions)
+            Result.success(transactionApiService.getTransactions())
         } catch (e: Exception) {
             Result.failure(e)
         }

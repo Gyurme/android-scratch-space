@@ -1,5 +1,6 @@
 package com.gyurme.template.network
 
+import com.gyurme.template.data.Transaction
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.POST
@@ -9,7 +10,7 @@ interface TransactionApiService {
 
     @Headers("X-API-Key: ee1ede00")
     @GET("transactions")
-    suspend fun getTransactions(): TransactionListResponse
+    suspend fun getTransactions(): List<Transaction>
 
     @Headers("X-API-Key: ee1ede00")
     @POST("transactions/{transactionId")

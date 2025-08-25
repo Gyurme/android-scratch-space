@@ -1,11 +1,15 @@
 package com.gyurme.template.data
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 enum class TransactionStatus {
     PENDING,
     APPROVED,
     DECLINED
 }
 
+@Serializable
 data class Transaction(
     val id: Long,
     val amount: Double,
