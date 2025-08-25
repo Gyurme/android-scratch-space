@@ -3,10 +3,14 @@ package com.gyurme.template.data
 import kotlinx.serialization.Serializable
 
 @Serializable
-enum class TransactionStatus {
-    PENDING,
-    APPROVED,
-    DECLINED
+enum class TransactionStatus(val displayName: String) {
+    PENDING("Pending"),
+    APPROVED("Approved"),
+    DECLINED("Declined");
+
+    override fun toString(): String {
+        return displayName
+    }
 }
 
 @Serializable
