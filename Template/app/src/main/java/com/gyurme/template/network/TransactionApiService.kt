@@ -13,7 +13,7 @@ interface TransactionApiService {
     suspend fun getTransactions(): List<Transaction>
 
     @Headers("X-API-Key: ee1ede00")
-    @POST("transactions/{transactionId")
+    @POST("transactions/{transactionId}/approve")
     suspend fun approveTransaction(@Path("transactionId") transactionId: Long)
-            : ApproveTransactionResponse
+            : List<Transaction>
 }

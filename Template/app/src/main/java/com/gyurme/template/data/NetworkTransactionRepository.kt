@@ -15,9 +15,9 @@ class NetworkTransactionRepository @Inject constructor(private val transactionAp
         }
     }
 
-    override suspend fun approveTransaction(id: Long): Result<Transaction> {
+    override suspend fun approveTransaction(id: Long): Result<List<Transaction>> {
         return try {
-            Result.success(transactionApiService.approveTransaction(id).transaction)
+            Result.success(transactionApiService.approveTransaction(id))
         } catch (e: Exception) {
             Result.failure(e)
         }

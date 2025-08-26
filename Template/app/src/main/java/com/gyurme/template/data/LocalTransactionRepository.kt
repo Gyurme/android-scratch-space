@@ -13,14 +13,14 @@ class LocalTransactionRepository : TransactionRepository {
         }
     }
 
-    override suspend fun approveTransaction(id: Long): Result<Transaction> {
+    override suspend fun approveTransaction(id: Long): Result<List<Transaction>> {
         return try {
             delay(500) // Simulate network
             val updated = MockTransactionData.sampleTransactions
                 .find { it.id == id }
                 ?.copy(status = TransactionStatus.APPROVED)
 
-            updated?.let { Result.success(it) }
+            updated?.let { Result.success(listOf(it)) }
                 ?: Result.failure(Exception("Transaction not found"))
         } catch (e: Exception) {
             Result.failure(e)

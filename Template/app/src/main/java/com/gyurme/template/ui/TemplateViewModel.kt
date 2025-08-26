@@ -1,11 +1,15 @@
 package com.gyurme.template.ui
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+// Remove: import androidx.compose.runtime.getValue
+// Remove: import androidx.compose.runtime.mutableStateOf
+// Remove: import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gyurme.template.data.TransactionRepository
+// Add these imports for StateFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -13,10 +17,12 @@ import javax.inject.Inject
 @HiltViewModel
 class TemplateViewModel @Inject constructor(
     private val transactionRepository: TransactionRepository
-): ViewModel() {
+) : ViewModel() {
 
-    var templateUiState: TemplateUiState by mutableStateOf(TemplateUiState.Loading)
-        private set
+    // Change from mutableStateOf to MutableStateFlow
+    private val _templateUiState = MutableStateFlow<TemplateUiState>(TemplateUiState.Loading)
+    val templateUiState: StateFlow<TemplateUiState> = _templateUiState.asStateFlow()
+    // The 'private set' is no longer needed as the public property is now immutable (StateFlow)
 
     init {
         getTransactions()
@@ -24,11 +30,29 @@ class TemplateViewModel @Inject constructor(
 
     fun getTransactions() {
         viewModelScope.launch {
-            templateUiState = TemplateUiState.Loading
-            templateUiState = transactionRepository.getTransactions()
+            _templateUiState.value = TemplateUiState.Loading
+            transactionRepository.getTransactions()
                 .fold(
-                    onSuccess = { TemplateUiState.Success(it) },
-                    onFailure = { TemplateUiState.Error }
+                    onSuccess = { transactions ->
+                        _templateUiState.value = TemplateUiState.Success(transactions)
+                    },
+                    onFailure = {
+                        _templateUiState.value = TemplateUiState.Error
+                    }
+                )
+        }
+    }
+
+    fun approveTransaction(id: Long) {
+        viewModelScope.launch {
+            transactionRepository.approveTransaction(id)
+                .fold(
+                    onSuccess = {
+                        getTransactions()
+                    },
+                    onFailure = {
+                        _templateUiState.value = TemplateUiState.Error
+                    }
                 )
         }
     }

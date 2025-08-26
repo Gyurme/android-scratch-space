@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -28,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.gyurme.template.R
 import com.gyurme.template.data.Transaction
 import com.gyurme.template.data.TransactionStatus
@@ -37,6 +39,7 @@ import java.util.Locale // Required for NumberFormat
 @Composable
 fun TemplateScreen(
     templateUiState: TemplateUiState,
+    onApproveTransaction: (Long) -> Unit,
     retryAction: () -> Unit = {},
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp)
@@ -47,8 +50,9 @@ fun TemplateScreen(
 
         is TemplateUiState.Success ->
             HomeScreen(
-                templateUiState.transactions,
-                modifier,
+                transactions = templateUiState.transactions,
+                onApproveTransaction = onApproveTransaction,
+                modifier = modifier,
                 contentPadding
             )
 
@@ -59,7 +63,9 @@ fun TemplateScreen(
 
 @Composable
 fun HomeScreen(
-    transactions: List<Transaction>, modifier: Modifier = Modifier,
+    transactions: List<Transaction>,
+    onApproveTransaction: (Long) -> Unit,
+    modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
     LazyColumn(
@@ -68,13 +74,21 @@ fun HomeScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp) // Increased spacing
     ) {
         items(transactions) { transaction ->
-            TransactionItem(transaction = transaction, modifier = Modifier.fillMaxWidth())
+            TransactionItem(
+                transaction = transaction,
+                onApproveClicked = { onApproveTransaction(transaction.id) },
+                modifier = Modifier.fillMaxWidth()
+            )
         }
     }
 }
 
 @Composable
-fun TransactionItem(transaction: Transaction, modifier: Modifier = Modifier) {
+fun TransactionItem(
+    transaction: Transaction,
+    onApproveClicked: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Card(
         modifier = modifier,
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
@@ -137,16 +151,29 @@ fun TransactionItem(transaction: Transaction, modifier: Modifier = Modifier) {
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 val statusColor = when (transaction.status) {
-                    TransactionStatus.APPROVED -> Color(0xFF388E3C) // Green
-                    TransactionStatus.PENDING -> Color(0xFFF57C00)  // Orange
-                    TransactionStatus.DECLINED -> MaterialTheme.colorScheme.error // Red
+                    TransactionStatus.APPROVED -> Color(0xFF388E3C)
+                    TransactionStatus.PENDING -> Color(0xFFF57C00)
+                    TransactionStatus.DECLINED -> MaterialTheme.colorScheme.error
                 }
                 Text(
-                    text = transaction.status.name.lowercase(),
+                    text = transaction.status.name.lowercase(Locale.ROOT)
+                        .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() },
                     style = MaterialTheme.typography.labelMedium,
                     color = statusColor,
                     fontWeight = FontWeight.Bold
                 )
+            }
+
+            // Add Approve Button if status is PENDING
+            if (transaction.status == TransactionStatus.PENDING) {
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(
+                    onClick = onApproveClicked,
+                    modifier = Modifier.align(Alignment.End),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF388E3C)) // Green button
+                ) {
+                    Text("Approve")
+                }
             }
         }
     }
@@ -165,7 +192,10 @@ fun TransactionItemPreview() {
         description = "Dinner with friends"
     )
     MaterialTheme { // Wrap preview in MaterialTheme for styles to apply
-        TransactionItem(transaction = sampleTransaction, modifier = Modifier.width(380.dp))
+        TransactionItem(
+            transaction = sampleTransaction, modifier = Modifier.width(380.dp),
+            onApproveClicked = {  }
+        )
     }
 }
 
@@ -182,7 +212,10 @@ fun TransactionItemPreviewDeclined() {
         description = "Monthly fee"
     )
     MaterialTheme {
-        TransactionItem(transaction = sampleTransaction, modifier = Modifier.width(380.dp))
+        TransactionItem(
+            transaction = sampleTransaction, modifier = Modifier.width(380.dp),
+            onApproveClicked = {  }
+        )
     }
 }
 
